@@ -1,10 +1,14 @@
-import { LightningElement , api , wire} from 'lwc';
+import { LightningElement, api, wire, track } from 'lwc';
 import getCars from '@salesforce/apex/CarSearchResultController.getCars';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+
 
 export default class CarSearchResult extends LightningElement {
     @api carTypeId;
-    cars;
-    
+
+    @track cars;
+    @track selectedCarId;
+
     @wire(getCars, {carTypeId : '$carTypeId'})
     wiredCars({data, error}){
         if(data){
@@ -21,6 +25,11 @@ export default class CarSearchResult extends LightningElement {
             variant: variant,
         });
         this.dispatchEvent(evt);
+    }
+
+    carSelectHandler(event){
+        const carId = event.detail;
+        this.selectedCarId = carId;
     }
 
     get carsFound(){
